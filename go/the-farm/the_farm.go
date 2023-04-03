@@ -9,11 +9,11 @@ import (
 
 // TODO: Define the SillyNephewError type here.
 type SillyNephewError struct {
-	cows int
+	Cows int
 }
 
-func (s SillyNephewError) Error() string {
-	return fmt.Sprintf("silly nephew, there cannot be %d cows", s.cows)
+func (s *SillyNephewError) Error() string {
+	return fmt.Sprintf("silly nephew, there cannot be %d cows", s.Cows)
 }
 
 // DivideFood computes the fodder amount per cow for the given cows.
