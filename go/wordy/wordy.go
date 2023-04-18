@@ -1,6 +1,7 @@
 package wordy
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -64,20 +65,39 @@ func Answer(question string) (int, bool) {
 	}
 
 	return result, true
+
 }
 
-func Add(a, b int) int {
-	return a + b
-}
+func RegexAnswer(question string) (int, bool) {
+	if match, _ := regexp.MatchString(`What is -?\d+(?: (?:plus|minus|divided by|multiplied by) -?\d+)*\?`, question); !match {
+		return 0, false
+	}
 
-func Subtract(a, b int) int {
-	return a - b
-}
+	operatorRegex := regexp.MustCompile(`(plus|minus|divided|multiplied)`)
+	operators := operatorRegex.FindAllString(question, -1)
 
-func Multiply(a, b int) int {
-	return a * b
-}
+	operandRegex := regexp.MustCompile(`-?\d+`)
+	operands := operandRegex.FindAllString(question, -1)
 
-func Divide(a, b int) int {
-	return a / b
+	if len(operators) != len(operands)-1 {
+		return 0, false
+	}
+
+	result, _ := strconv.Atoi(operands[0])
+
+	for i, o := range operators {
+		n, _ := strconv.Atoi(operands[i+1])
+		switch o {
+		case "plus":
+			result += n
+		case "minus":
+			result -= n
+		case "divided":
+			result /= n
+		case "multiplied":
+			result *= n
+		}
+	}
+
+	return result, true
 }
